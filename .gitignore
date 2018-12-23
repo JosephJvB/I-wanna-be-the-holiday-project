@@ -1,0 +1,5 @@
+node_modules
+DS_Store
+# guess I dont need this one if Im in sublime text but old habits die hard
+.vscode
+SECRETS.json
