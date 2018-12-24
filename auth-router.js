@@ -12,14 +12,15 @@ router.post('/register', (req, res, next) => {
 			console.log('DB_READ_ERROR @ "/register":', err)
 			return res.sendStatus(500)
 		}
-		if(data && data.id) { // user already exists
+		if(data) { // user already exists
 			return res.sendStatus(400)
 		}
 
 		// on-success
 		const newUser = {
 			username: req.body.username,
-			// password: bcrypt.hash(req.body.password)
+			// password: bcrypt.hash(req.body.password),
+			created_at: Date()
 		}
 		db.createUser(newUser, (err) => {
 			if(err) return console.log('DB_WRITE_ERROR @ "/register":', err)

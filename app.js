@@ -12,6 +12,7 @@ const app = express()
 
 app.use(express.json())
 
+// dev debug route
 app.get('/test', (req, res) => {
 	if(process.env.TEST) {
 		res.sendFile(path.join(__dirname, 'test.html'))
@@ -19,6 +20,7 @@ app.get('/test', (req, res) => {
 	else res.send('Test mode is OFF')
 })
 
+// all auth routing
 app.use('/api/v1/auth', authRouter)
 
 app.listen(

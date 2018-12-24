@@ -16,5 +16,38 @@
       "created_at": "date"
     }
   ],
-  "rows": []
+  "rows": {
+    "0": {
+      "username": "joe",
+      "created_at": "Tue Dec 25 2018 12:08:39 GMT+1300 (NZDT)"
+    },
+    "1": {
+      "username": "tom",
+      "created_at": "Tue Dec 25 2018 12:08:44 GMT+1300 (NZDT)"
+    },
+    "2": {
+      "username": "hey",
+      "created_at": "Tue Dec 25 2018 12:09:58 GMT+1300 (NZDT)"
+    },
+    "3": {
+      "username": "heyss",
+      "created_at": "Tue Dec 25 2018 12:10:09 GMT+1300 (NZDT)"
+    },
+    "4": {
+      "username": "asd",
+      "created_at": "Tue Dec 25 2018 12:10:16 GMT+1300 (NZDT)"
+    },
+    "5": {
+      "username": "asdasd",
+      "created_at": "Tue Dec 25 2018 12:12:34 GMT+1300 (NZDT)"
+    },
+    "6": {
+      "username": "asdasdasd",
+      "created_at": "Tue Dec 25 2018 12:12:44 GMT+1300 (NZDT)"
+    },
+    "7": {
+      "username": "dada",
+      "created_at": "Tue Dec 25 2018 12:13:15 GMT+1300 (NZDT)"
+    }
+  }
 }

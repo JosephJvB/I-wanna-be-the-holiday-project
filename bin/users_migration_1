@@ -17,7 +17,7 @@ const SCHEMA = JSON.stringify({
     {last_login_at: "date"},
     {created_at: "date"},
   ],
-  rows: []
+  rows: {}
 }, null, 2)
 
 switch(args[0].toLowerCase()) {

@@ -8,15 +8,20 @@ module.exports = {
 		return fs.readFile(USERS, (err, data) => {
 			if(err) return cb(err)
 			const json = JSON.parse(data)
-			const foundUser = json.rows.find(user => user.username === username)
-			cb(null, foundUser)
+			const ids = Object.keys(json.rows)
+			const foundUserId = ids.find(id => json.rows[id].username === username)
+			// if username is found, return user, else false
+			const result = foundUserId ? json.rows[foundUserId] : false
+			cb(null, result)
 		})
 	},
 	createUser: function (nextData, cb) {
 		return fs.readFile(USERS, (err, data) => {
 			if(err) return cb(err)
 			const json = JSON.parse(data)
-			json.rows.push(nextData)
+			const ids = Object.keys(json.rows)
+			const nextId = (Number(ids[ids.length - 1]) + 1) || 0
+			json.rows[nextId] = nextData
 			return fs.writeFile(USERS, JSON.stringify(json, null, 2), (err) => {
 				if(err) return cb(err)
 				cb(null)
@@ -24,22 +29,17 @@ module.exports = {
 		})
 	},
 	updateUser: function (nextData, cb) {
+		// make sure to protect: id & created_at fields. Never update these
 		if(!nextData.id) return cb('UPDATE NEEDS ID')
 		return fs.readFile(USERS, (err, data) => {
 			if(err) return cb(err)
 
 			const json = JSON.parse(data)
-			const foundUser = json.rows.find(user => user.id === nextData.id)
+			const foundUser = json.rows[nextData.id]
 			if(!foundUser) return cb(`@UPDATE: NO USER, ID=${nextData.id} EXISTS`)
-			// better would be to get indexOf foundUser and just update that!
-		 	json.rows = json.rows.map(user => {
-		 		if(user.id === foundUser.id) {
-	 				return Object.assign(user, nextData)
-		 		}
-		 		return user
-		 	})
+			// update Object
+		 	json.rows[nextData.id] = Object.assign(foundUser, nextData)
 
-		 	// i dunno if writeFile's cb gets called with data
 			return fs.writeFile(USERS, json, (err) => {
 				if(err) return cb(err)
 				cb(null)
