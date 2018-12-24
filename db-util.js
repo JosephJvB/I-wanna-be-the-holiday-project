@@ -17,7 +17,7 @@ module.exports = {
 			if(err) return cb(err)
 			const json = JSON.parse(data)
 			json.rows.push(nextData)
-			return fs.writeFile(USERS, json, (err) => {
+			return fs.writeFile(USERS, JSON.stringify(json), (err) => {
 				if(err) return cb(err)
 				cb(null)
 			})

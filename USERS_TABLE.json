@@ -1,9 +1,1 @@
-{
-	"meta": [
-		{"username": "string"},
-		{"password": "string"},
-		{"last_login_at": "date"}
-	],
-	"rows": [
-	]
-}
+{"meta":[{"username":"string"},{"password":"string"},{"last_login_at":"date"}],"rows":[{"username":"joe"}]}

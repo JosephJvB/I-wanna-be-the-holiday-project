@@ -6,9 +6,6 @@ const db = require('./db-util')
 router.use(express.json())
 
 router.post('/register', (req, res, next) => {
-	// dont have req.body here??
-	console.log('hit', req.body)
-	return 
 	return db.findUserByName(req.body.username, (err, data) => {
 		// on-error
 		if(err) {
