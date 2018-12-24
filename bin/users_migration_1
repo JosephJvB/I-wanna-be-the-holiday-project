@@ -1,0 +1,42 @@
+#!/usr/bin/env node
+const fs = require('fs')
+const path = require('path')
+const args = process.argv.slice(2)
+
+//TODO: have all migrations live in migrations/ dir. Write a script to call them all in order by number
+// fs.readdir() get fileNames, order by number, then call them in order... how do that?
+
+if(!args[0]) return console.log('no command given')
+
+const USERS = path.join(__dirname, '../USERS_TABLE.json')
+const SCHEMA = JSON.stringify({
+  meta: [
+    {id: "number"},
+    {username: "string"},
+    {password: "string"},
+    {last_login_at: "date"},
+    {created_at: "date"},
+  ],
+  rows: []
+}, null, 2)
+
+switch(args[0].toLowerCase()) {
+  case 'up': {
+    if(fs.existsSync(USERS)) console.log('users table already exists, migrate "down" to drop table.')
+    else fs.writeFile(USERS, SCHEMA, (err) => {
+      if(err) console.log('❌ ERROR @ MIGRATE_UP: USERS')
+      else return console.log('✅  USERS up')
+    })
+  }
+  break;
+  case 'down': {
+    if(!fs.existsSync(USERS)) console.log('cannot drop table users: table does not exist')
+    // fs.unlink will remove a file - weird name for the method
+    else fs.unlink(USERS, (err) => {
+      if(err) console.log('❌ ERROR @ MIGRATE_DOWN: USERS')
+      else return console.log('✅  USERS down')
+    })
+  }
+  break;
+  default: console.log('no command recognised, choose "up" or "down"')
+}

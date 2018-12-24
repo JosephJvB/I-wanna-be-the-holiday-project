@@ -16,21 +16,5 @@
       "created_at": "date"
     }
   ],
-  "rows": [
-    {
-      "username": "joe"
-    },
-    {
-      "username": "joe"
-    },
-    {
-      "username": "joe"
-    },
-    {
-      "username": "joe"
-    },
-    {
-      "username": "joe"
-    }
-  ]
+  "rows": []
 }
