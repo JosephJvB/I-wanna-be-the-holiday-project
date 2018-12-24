@@ -1,1 +1,36 @@
-{"meta":[{"username":"string"},{"password":"string"},{"last_login_at":"date"}],"rows":[{"username":"joe"}]}
+{
+  "meta": [
+    {
+      "id": "number"
+    },
+    {
+      "username": "string"
+    },
+    {
+      "password": "string"
+    },
+    {
+      "last_login_at": "date"
+    },
+    {
+      "created_at": "date"
+    }
+  ],
+  "rows": [
+    {
+      "username": "joe"
+    },
+    {
+      "username": "joe"
+    },
+    {
+      "username": "joe"
+    },
+    {
+      "username": "joe"
+    },
+    {
+      "username": "joe"
+    }
+  ]
+}

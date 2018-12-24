@@ -5,12 +5,19 @@ const fs = require('fs')
 const path = require('path')
 const express = require('express')
 const authRouter = require('./auth-router')
-loadConfig() // custom .env loader
+loadConfig({
+	test: true
+}) // custom .env loader (is synchronous)
 const app = express()
 
 app.use(express.json())
 
-// app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'test.html')))
+app.get('/test', (req, res) => {
+	if(process.env.TEST) {
+		res.sendFile(path.join(__dirname, 'test.html'))
+	}
+	else res.send('Test mode is OFF')
+})
 
 app.use('/api/v1/auth', authRouter)
 
@@ -21,7 +28,7 @@ app.listen(
 
 // save secrets to process.env
 // choose synchronous readfile so app cant start before config loads
-function loadConfig () {
+function loadConfig ({test}) {
 	const data = fs.readFileSync(path.join(__dirname, 'SECRETS.json'))
 	// did you know that json.parse can turn a buffer into JSON? that is fancy
 	const json = JSON.parse(data)
@@ -33,5 +40,11 @@ function loadConfig () {
 	if(!process.env.PORT) {
 		process.env.PORT = 3000
 	}
-	return null
+	if(test) process.env.TEST = true
+	console.log('test:', test ? 'ON @ /test' : 'OFF')
+	// return object with keys that we added to env, json from secrets & PORT & test
+	return Object.assign(json, {
+		PORT: process.env.PORT,
+		test,
+	})
 }
