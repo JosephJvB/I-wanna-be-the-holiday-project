@@ -1,12 +1,12 @@
 // const stuff = require('bcrypt')
 const express = require('express')
 const router = express.Router() // is that how you do this?
-const db = require('./db-util')
+const users = require('./users-db-service')
 
 router.use(express.json())
 
 router.post('/register', (req, res, next) => {
-	return db.findUserByName(req.body.username, (err, data) => {
+	return users.findUserByName(req.body.username, (err, data) => {
 		// on-error
 		if(err) {
 			console.log('DB_READ_ERROR @ "/register":', err)
@@ -22,7 +22,7 @@ router.post('/register', (req, res, next) => {
 			// password: bcrypt.hash(req.body.password),
 			created_at: Date()
 		}
-		db.createUser(newUser, (err) => {
+		users.createUser(newUser, (err) => {
 			if(err) return console.log('DB_WRITE_ERROR @ "/register":', err)
 			res.sendStatus(200)
 		})
@@ -30,7 +30,7 @@ router.post('/register', (req, res, next) => {
 })
 
 router.post('/login', (req, res, next) => {
-	return db.findUserByName(req.body.username, (err, data) => {
+	return users.findUserByName(req.body.username, (err, data) => {
 		// on-error
 		if(err) {
 			console.log('DB_READ_ERROR @ "/login":', err)
@@ -42,7 +42,7 @@ router.post('/login', (req, res, next) => {
 		// }
 
 		// on-success
-		return db.updateUser({
+		return users.updateUser({
 			id: data.id,
 			last_login_at: Date()
 		}, (err) => {

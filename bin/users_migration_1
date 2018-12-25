@@ -6,7 +6,7 @@ const args = process.argv.slice(2)
 //TODO: have all migrations live in migrations/ dir. Write a script to call them all in order by number
 // fs.readdir() get fileNames, order by number, then call them in order... how do that?
 
-if(!args[0]) return console.log('no command given')
+if(!args[0]) return console.log('❌ no command given')
 
 const USERS = path.join(__dirname, '../USERS_TABLE.json')
 const SCHEMA = JSON.stringify({
@@ -16,13 +16,16 @@ const SCHEMA = JSON.stringify({
     {password: "string"},
     {last_login_at: "date"},
     {created_at: "date"},
+    {deleted: "boolean"},
+    {deleted_at: "date"}
   ],
-  rows: {}
+  rows: {},
+  next_user_id: 0
 }, null, 2)
 
 switch(args[0].toLowerCase()) {
   case 'up': {
-    if(fs.existsSync(USERS)) console.log('users table already exists, migrate "down" to drop table.')
+    if(fs.existsSync(USERS)) console.log('❌ users table already exists, migrate "down" to drop table.')
     else fs.writeFile(USERS, SCHEMA, (err) => {
       if(err) console.log('❌ ERROR @ MIGRATE_UP: USERS')
       else return console.log('✅  USERS up')
@@ -30,7 +33,7 @@ switch(args[0].toLowerCase()) {
   }
   break;
   case 'down': {
-    if(!fs.existsSync(USERS)) console.log('cannot drop table users: table does not exist')
+    if(!fs.existsSync(USERS)) console.log('❌ cannot drop table users: table does not exist')
     // fs.unlink will remove a file - weird name for the method
     else fs.unlink(USERS, (err) => {
       if(err) console.log('❌ ERROR @ MIGRATE_DOWN: USERS')
@@ -38,5 +41,5 @@ switch(args[0].toLowerCase()) {
     })
   }
   break;
-  default: console.log('no command recognised, choose "up" or "down"')
+  default: console.log('❌ no command recognised, choose "up" or "down"')
 }
