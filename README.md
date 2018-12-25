@@ -2,9 +2,8 @@
 
 - revise authorization, hashing passwords and JWTs
 - sidequest: using fileSystem as a database.
+- smart idea: have a queue running that will read the "filesystem-DB" and insert those entries into a real database. That means that it will be harder to break a SQL database with too many connections.
+  - insert into FILE_DB with `{temp: true}`
+  - queue reads FILE_DB
+  - inserts all `{temp: true}` entries into SQL_DB & updates entries as `{temp: false}`
 
-As a thought: I could do all these functions as synchronous operations. Non-non-blocking.
-Not for any reason other than I can. (Not the express middleware, but all my 'database' operations)
-
-But I am having fun passing callbacks actually. I've used promises for so long that using callbacks has a novelty. Would have been fun to promisify them & use try/catch + async/await.
-For next time.
