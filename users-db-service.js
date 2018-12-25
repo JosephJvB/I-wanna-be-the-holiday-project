@@ -29,7 +29,7 @@ const path = require('path')
 	next_user_id: 0
 }
 *********
-METHODS
+ METHODS
 *********
 find(id) => Object.keys(rows).find(id => rows[id])
 create(user) => rows[nextId] = user
@@ -49,8 +49,10 @@ module.exports = {
 			const ids = Object.keys(json.rows)
 			const foundUserId = ids.find(id => json.rows[id].username === username)
 
-			// if username is found, return user, else false
-			const result = foundUserId ? json.rows[foundUserId] : false
+			// if username is found, return user and add id, else false
+			const result = foundUserId
+				? Object.assign(json.rows[foundUserId], {id: foundUserId})
+				: false
 
 			cb(null, result)
 		})
@@ -69,19 +71,19 @@ module.exports = {
 			})
 		})
 	},
-	updateUser: function (nextData, cb) {
+	updateUser: function (id, nextData, cb) {
 		// make sure to protect: id & created_at fields. Never update these
-		if(!nextData.id) return cb('UPDATE NEEDS ID')
+		if(!id) return cb({message: 'UPDATE NEEDS ID'})
 		return fs.readFile(USERS, (err, data) => {
 			if(err) return cb(err)
 
 			const json = JSON.parse(data)
-			const foundUser = json.rows[nextData.id]
-			if(!foundUser) return cb(`@UPDATE: NO USER, ID=${nextData.id}`)
+			const foundUser = json.rows[id]
+			if(!foundUser) return cb({message: `@UPDATE: NO USER, ID=${id}`})
 			// update Object
-		 	json.rows[nextData.id] = Object.assign(foundUser, nextData)
+		 	json.rows[id] = Object.assign(foundUser, nextData)
 
-			return fs.writeFile(USERS, json, (err) => {
+			return fs.writeFile(USERS, JSON.stringify(json, null, 2), (err) => {
 				if(err) return cb(err)
 				cb(null)
 			})
@@ -94,7 +96,7 @@ module.exports = {
 
 			const json = JSON.parse(data)
 			const userToDelete = json.rows[id]
-			if(!userToDelete) return cb(`@DELETE: NO USER, ID=${id}`)
+			if(!userToDelete) return cb({message: `@DELETE: NO USER, ID=${id}`})
 			const deleteInfo = {
 				deleted: true,
 				deleted_at: date()

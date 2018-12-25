@@ -4,7 +4,9 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
-    "express": "^4.16.4"
+    "bcrypt": "^1.0.3",
+    "express": "^4.16.4",
+    "jsonwebtoken": "^8.3.0"
   },
   "devDependencies": {},
   "scripts": {

@@ -1,55 +1,89 @@
-// const stuff = require('bcrypt')
 const express = require('express')
-const router = express.Router() // is that how you do this?
+const router = express.Router()
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 const users = require('./users-db-service')
+
+// TODO: full async/await refactor to avoid callback-hell and sync-city
+// . users-service to use util.promisify() fs methods
+// . use async for bcrypt and jwt
 
 router.use(express.json())
 
 router.post('/register', (req, res, next) => {
-	return users.findUserByName(req.body.username, (err, data) => {
+	return users.findUserByName(req.body.username, (err, user) => {
 		// on-error
 		if(err) {
 			console.log('DB_READ_ERROR @ "/register":', err)
-			return res.sendStatus(500)
+			return res.status(500).json({message: err.message})
 		}
-		if(data) { // user already exists
-			return res.sendStatus(400)
+		if(!!user) {
+			return res.status(400).json({message: 'User already exists'})
 		}
 
-		// on-success
+		// hash password > create token > save to DB
 		const newUser = {
 			username: req.body.username,
-			// password: bcrypt.hash(req.body.password),
+			password: getHash(req.body.password),
 			created_at: Date()
 		}
-		users.createUser(newUser, (err) => {
-			if(err) return console.log('DB_WRITE_ERROR @ "/register":', err)
-			res.sendStatus(200)
+		
+		return users.createUser(newUser, (err) => {
+			if(err) return res.status(500).json({message: err.message})
+			// give web access
+			const token = getToken(user)
+			return res.status(200).json({token})
 		})
 	})
 })
 
 router.post('/login', (req, res, next) => {
-	return users.findUserByName(req.body.username, (err, data) => {
+	// does user exist
+	return users.findUserByName(req.body.username, (err, user) => {
 		// on-error
 		if(err) {
 			console.log('DB_READ_ERROR @ "/login":', err)
-			return res.sendStatus(500)
+			return res.status(500).json({message: err.message})
 		}
-		// bcrypt stuff:
-		// if(bcrypt.hash(req.body.password) !== data.password) { // incorrect details
-		// 	return res.sendStatus(400)
-		// }
-
-		// on-success
-		return users.updateUser({
-			id: data.id,
-			last_login_at: Date()
-		}, (err) => {
+		if(!user) {
+			return res.status(400).json({message: 'User does not exist'})
+		}
+		// did user enter correct password
+		const passwordMatch = getMatch(req.body.password, user.password)
+		if(!passwordMatch) {
+			return res.status(400).send({message: 'Incorrect password'})
+		}
+		
+		// update user login info
+		users.updateUser(user.id, {last_login_at: Date()}, (err) => {
 			if(err) return console.log('DB_WRITE_ERROR @ "/login":', err)
-			res.sendStatus(200)
+			// give user web access
+			const token = getToken(user)
+			res.status(200).json({token})
 		})
 	})
 })
+
+// TOOL-BOX
+
+function getHash (password) {
+	const SALT_ROUNDS = 5
+	return bcrypt.hashSync(password, SALT_ROUNDS)
+}
+
+function getToken (user) {
+	const payload = {
+		id: user.id,
+		username: user.username
+	}
+	const opts = { expiresIn: '1d' }
+	return jwt.sign(payload, process.env.AUTH_SECRET, opts)
+}
+
+function getMatch (password, hash) {
+	return bcrypt.compareSync(password, hash)
+}
+
+
 
 module.exports = router

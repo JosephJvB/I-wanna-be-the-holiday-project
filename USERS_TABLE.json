@@ -23,14 +23,17 @@
     }
   ],
   "rows": {
-    "0": {
-      "username": "err test",
-      "created_at": "Tue Dec 25 2018 22:27:16 GMT+1300 (NZDT)"
+    "6": {
+      "username": "mum",
+      "password": "$2a$05$SeZr8kGt3SWqej6IBPRSuekgYdbZ/jeexsKxVIQ8efjrddeoCcW9q",
+      "created_at": "Wed Dec 26 2018 09:52:40 GMT+1300 (NZDT)",
+      "last_login_at": "Wed Dec 26 2018 09:53:49 GMT+1300 (NZDT)"
     },
-    "1": {
-      "username": "itrate",
-      "created_at": "Tue Dec 25 2018 22:27:28 GMT+1300 (NZDT)"
+    "7": {
+      "username": "joe",
+      "password": "$2a$05$qS/lmwEzptugZtHZ64JzNuC2bdEFx1b6P2yJlm4XulcteiRAb.UUG",
+      "created_at": "Wed Dec 26 2018 09:54:16 GMT+1300 (NZDT)"
     }
   },
-  "next_user_id": 2
+  "next_user_id": 8
 }

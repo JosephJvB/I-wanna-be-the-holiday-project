@@ -6,23 +6,39 @@
 </head>
 <body>
 	<form>
-		<input type="text" id="i">
-		<button id="t">CLICK ME FOR TEST</button>
+		<label>USERNAME:</label>
+		<input type="text" id="user">
+		<label >PASSWORD:</label>
+		<input type="text" id="pass">
+		<button id="x">register</button>
+		<button id="y">login</button>
 	</form>
 	<script>
-		document.getElementById('t').addEventListener('click', (e) => {
-			e.preventDefault()
-			const inputValue = document.getElementById('i').value
-			window.fetch('http://localhost:3000/api/v1/auth/register', {
+		function send (e) {
+			const user = document.getElementById('user').value
+			const pass = document.getElementById('pass').value
+			const route = e.target.innerText
+			window.fetch(`http://localhost:3000/api/v1/auth/${route}`, {
 				method: 'POST',
-				body: JSON.stringify({username: inputValue}),
+				body: JSON.stringify({
+					username: user,
+					password: pass
+					}),
 				headers: {
 					Accept: 'application/json',
 					'Content-Type': 'application/json',
 				}
 			})
-			.then(console.log)
-			.catch(console.error)
+			.then(res => console.log(res, 'DONE'))
+			.catch(console.error)			
+		}
+		document.getElementById('x').addEventListener('click', (e) => {
+			e.preventDefault()
+			send(e)
+		})
+		document.getElementById('y').addEventListener('click', (e) => {
+			e.preventDefault()
+			send(e)
 		})
 	</script>
 </body>
