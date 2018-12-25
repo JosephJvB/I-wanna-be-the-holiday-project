@@ -7,22 +7,23 @@ const path = require('path')
 {
   meta: [
     {username: "string"},
-    {password: "string"},
+    {hash: "string"},
     {last_login_at: "date"},
 		{created_at: "date"},
 		{deleted: "boolean"},
     {deleted_at: "date"}
   ],
-	// rows=user objects keyed by Id
-  rows: {
-		[id]"0": [userInfo]{
-			"username",
-			"password",
-			"last_login_at",
-			"last_login_at"
-			"deleted"
-			"deleted_at"
-		}
+  rows: [
+			{
+				"id",
+				"username",
+				"hash",
+				"last_login_at",
+				"last_login_at"
+				"deleted"
+				"deleted_at"
+			}
+		]
 	},
 	// so there is a perminant count for userId even after users are deleted
 	// ...even tho I dont have hard delete functionality
@@ -31,7 +32,7 @@ const path = require('path')
 *********
  METHODS
 *********
-find(id) => Object.keys(rows).find(id => rows[id])
+findByName(name) => rows[getIdx(name)]
 create(user) => rows[nextId] = user
 update(user) => rows[user.id] = Object.assign(rows[user.id], user)
 delete(id) => rows[id].deleted = true
@@ -46,28 +47,23 @@ module.exports = {
 		return fs.readFile(USERS, (err, data) => {
 			if(err) return cb(err)
 			const json = JSON.parse(data)
-			const ids = Object.keys(json.rows)
-			const foundUserId = ids.find(id => json.rows[id].username === username)
-
-			// if username is found, return user and add id, else false
-			const result = foundUserId
-				? Object.assign(json.rows[foundUserId], {id: foundUserId})
-				: false
-
-			cb(null, result)
+			const user = json.rows.find(user => user.username === username)
+			cb(null, user)
 		})
 	},
 	createUser: function (nextData, cb) {
 		return fs.readFile(USERS, (err, data) => {
 			if(err) return cb(err)
 			const json = JSON.parse(data)
-			// add user and iterate id
-			json.rows[json.next_user_id] = nextData
-			json.next_user_id = Number(json.next_user_id) + 1
+			// add id to user > add user to rows > iterate id
+			nextData.id = json.next_user_id
+			json.rows.push(nextData)
+			json.next_user_id++
 
 			return fs.writeFile(USERS, JSON.stringify(json, null, 2), (err) => {
 				if(err) return cb(err)
-				cb(null)
+				// return created user
+				cb(null, nextData)
 			})
 		})
 	},
@@ -78,14 +74,15 @@ module.exports = {
 			if(err) return cb(err)
 
 			const json = JSON.parse(data)
-			const foundUser = json.rows[id]
+			const foundUser = json.rows.find(user => user.id === id)
 			if(!foundUser) return cb({message: `@UPDATE: NO USER, ID=${id}`})
-			// update Object
-		 	json.rows[id] = Object.assign(foundUser, nextData)
+			// update user @ rows[index]
+			const idx = getIdx(json.rows, {input: id, target: 'id'})
+		 	json.rows[idx] = Object.assign(foundUser, nextData)
 
 			return fs.writeFile(USERS, JSON.stringify(json, null, 2), (err) => {
 				if(err) return cb(err)
-				cb(null)
+				cb(null, json.rows[idx])
 			})
 		})
 	},
@@ -95,19 +92,34 @@ module.exports = {
 			if(err) return cb(err)
 
 			const json = JSON.parse(data)
-			const userToDelete = json.rows[id]
+			// add deleted @ rows[index]
+			const idx = getIdx(json.rows, {input: id, target: 'id'})
+			const userToDelete = json.rows[idx]
 			if(!userToDelete) return cb({message: `@DELETE: NO USER, ID=${id}`})
 			const deleteInfo = {
 				deleted: true,
 				deleted_at: date()
 			}
-
-			json.rows[id] = Object.assign(userToDelete, deleteInfo)
+			json.rows[idx] = Object.assign(userToDelete, deleteInfo)
 
 			return fs.writeFile(USERS, json, (err) => {
 				if(err) return cb(err)
-				cb(null)
+				cb(null, id)
 			})
 		})
+	},
+	getAllUsers: function (cb) {
+		return fs.readFile(USERS, (err, users) => {
+			if(err) return cb(err)
+			cb(null, users)
+		})
 	}
+}
+
+function getIdx (list, match) {
+	const { input, target } = match
+	for(let i = 0; i < list.length; i++) {
+		if(list[i][target] === input) return i
+	}
+	return null
 }

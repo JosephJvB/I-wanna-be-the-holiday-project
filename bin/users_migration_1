@@ -13,14 +13,14 @@ const SCHEMA = JSON.stringify({
   meta: [
     {id: "number"},
     {username: "string"},
-    {password: "string"},
+    {hash: "string"},
     {last_login_at: "date"},
     {created_at: "date"},
     {deleted: "boolean"},
     {deleted_at: "date"}
   ],
-  rows: {},
-  next_user_id: 0
+  rows: [],
+  next_user_id: 1
 }, null, 2)
 
 switch(args[0].toLowerCase()) {

@@ -24,14 +24,14 @@ router.post('/register', (req, res, next) => {
 		// hash password > create token > save to DB
 		const newUser = {
 			username: req.body.username,
-			password: getHash(req.body.password),
+			hash: getHash(req.body.password),
 			created_at: Date()
 		}
 		
-		return users.createUser(newUser, (err) => {
+		return users.createUser(newUser, (err, createdUser) => {
 			if(err) return res.status(500).json({message: err.message})
 			// give web access
-			const token = getToken(user)
+			const token = getToken(createdUser)
 			return res.status(200).json({token})
 		})
 	})
@@ -49,16 +49,16 @@ router.post('/login', (req, res, next) => {
 			return res.status(400).json({message: 'User does not exist'})
 		}
 		// did user enter correct password
-		const passwordMatch = getMatch(req.body.password, user.password)
+		const passwordMatch = getMatch(req.body.password, user.hash)
 		if(!passwordMatch) {
 			return res.status(400).send({message: 'Incorrect password'})
 		}
 		
 		// update user login info
-		users.updateUser(user.id, {last_login_at: Date()}, (err) => {
+		users.updateUser(user.id, {last_login_at: Date()}, (err, updatedUser) => {
 			if(err) return console.log('DB_WRITE_ERROR @ "/login":', err)
 			// give user web access
-			const token = getToken(user)
+			const token = getToken(updatedUser)
 			res.status(200).json({token})
 		})
 	})

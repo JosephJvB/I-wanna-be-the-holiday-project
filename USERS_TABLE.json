@@ -7,7 +7,7 @@
       "username": "string"
     },
     {
-      "password": "string"
+      "hash": "string"
     },
     {
       "last_login_at": "date"
@@ -22,18 +22,14 @@
       "deleted_at": "date"
     }
   ],
-  "rows": {
-    "6": {
-      "username": "mum",
-      "password": "$2a$05$SeZr8kGt3SWqej6IBPRSuekgYdbZ/jeexsKxVIQ8efjrddeoCcW9q",
-      "created_at": "Wed Dec 26 2018 09:52:40 GMT+1300 (NZDT)",
-      "last_login_at": "Wed Dec 26 2018 09:53:49 GMT+1300 (NZDT)"
-    },
-    "7": {
+  "rows": [
+    {
       "username": "joe",
-      "password": "$2a$05$qS/lmwEzptugZtHZ64JzNuC2bdEFx1b6P2yJlm4XulcteiRAb.UUG",
-      "created_at": "Wed Dec 26 2018 09:54:16 GMT+1300 (NZDT)"
+      "hash": "$2a$05$iGYHNcrHakX63QKZA.TeJeUllGQexstwWc2H2naxAi9WVfGcXY0gi",
+      "created_at": "Wed Dec 26 2018 10:29:56 GMT+1300 (NZDT)",
+      "id": 1,
+      "last_login_at": "Wed Dec 26 2018 10:29:59 GMT+1300 (NZDT)"
     }
-  },
-  "next_user_id": 8
+  ],
+  "next_user_id": 2
 }
