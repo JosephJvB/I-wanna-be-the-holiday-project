@@ -28,8 +28,14 @@
       "hash": "$2a$05$iGYHNcrHakX63QKZA.TeJeUllGQexstwWc2H2naxAi9WVfGcXY0gi",
       "created_at": "Wed Dec 26 2018 10:29:56 GMT+1300 (NZDT)",
       "id": 1,
-      "last_login_at": "Wed Dec 26 2018 10:29:59 GMT+1300 (NZDT)"
+      "last_login_at": "Wed Dec 26 2018 11:07:43 GMT+1300 (NZDT)"
+    },
+    {
+      "username": "joes",
+      "hash": "$2a$04$0GwH3Hz8ZBWR546mlBUNRedX6BGZZUbcde2R3z4Vu5r9CCcHG84wS",
+      "created_at": "Wed Dec 26 2018 11:45:06 GMT+1300 (NZDT)",
+      "id": 2
     }
   ],
-  "next_user_id": 2
+  "next_user_id": 3
 }

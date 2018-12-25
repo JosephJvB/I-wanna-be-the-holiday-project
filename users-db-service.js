@@ -1,41 +1,14 @@
 const fs = require('fs')
 const path = require('path')
 
-/*********
-	SCHEMA:
-**********
-{
-  meta: [
-    {username: "string"},
-    {hash: "string"},
-    {last_login_at: "date"},
-		{created_at: "date"},
-		{deleted: "boolean"},
-    {deleted_at: "date"}
-  ],
-  rows: [
-			{
-				"id",
-				"username",
-				"hash",
-				"last_login_at",
-				"last_login_at"
-				"deleted"
-				"deleted_at"
-			}
-		]
-	},
-	// so there is a perminant count for userId even after users are deleted
-	// ...even tho I dont have hard delete functionality
-	next_user_id: 0
-}
-*********
+/********
  METHODS
 *********
-findByName(name) => rows[getIdx(name)]
-create(user) => rows[nextId] = user
-update(user) => rows[user.id] = Object.assign(rows[user.id], user)
-delete(id) => rows[id].deleted = true
+findByName(name) => rows.find(u => u.name === name)
+create(user) => rows.push(user);next_id++
+update(id, nextInfo) => rows[getIdx(id)] = Object.assign(rows[getIdx(id)], nextInfo)
+delete(id) => rows[getIdx(id)].deleted = true & deleted_at = Date()
+getAll() => rows
 TO ADD
 Do I want to have some functionality like feathers where if you pass array it does array stuff
 */
@@ -43,15 +16,16 @@ Do I want to have some functionality like feathers where if you pass array it do
 const USERS = path.join(__dirname, 'USERS_TABLE.json')
 
 module.exports = {
-	findUserByName: function (username, cb) {
+	find: function (params, cb) {
+		const { query, target } = params
 		return fs.readFile(USERS, (err, data) => {
 			if(err) return cb(err)
 			const json = JSON.parse(data)
-			const user = json.rows.find(user => user.username === username)
+			const user = json.rows.find(user => user[target] === query)
 			cb(null, user)
 		})
 	},
-	createUser: function (nextData, cb) {
+	create: function (nextData, cb) {
 		return fs.readFile(USERS, (err, data) => {
 			if(err) return cb(err)
 			const json = JSON.parse(data)
@@ -67,7 +41,7 @@ module.exports = {
 			})
 		})
 	},
-	updateUser: function (id, nextData, cb) {
+	update: function (id, nextData, cb) {
 		// make sure to protect: id & created_at fields. Never update these
 		if(!id) return cb({message: 'UPDATE NEEDS ID'})
 		return fs.readFile(USERS, (err, data) => {
@@ -77,7 +51,7 @@ module.exports = {
 			const foundUser = json.rows.find(user => user.id === id)
 			if(!foundUser) return cb({message: `@UPDATE: NO USER, ID=${id}`})
 			// update user @ rows[index]
-			const idx = getIdx(json.rows, {input: id, target: 'id'})
+			const idx = getIdx(json.rows, {query: id, target: 'id'})
 		 	json.rows[idx] = Object.assign(foundUser, nextData)
 
 			return fs.writeFile(USERS, JSON.stringify(json, null, 2), (err) => {
@@ -86,21 +60,21 @@ module.exports = {
 			})
 		})
 	},
-	deleteUser: function (id, cb) {
+	delete: function (id, cb) {
 		// SOFT DELETE
 		return fs.readFile(USERS, (err, data) => {
 			if(err) return cb(err)
 
 			const json = JSON.parse(data)
 			// add deleted @ rows[index]
-			const idx = getIdx(json.rows, {input: id, target: 'id'})
+			const idx = getIdx(json.rows, {query: id, target: 'id'})
 			const userToDelete = json.rows[idx]
 			if(!userToDelete) return cb({message: `@DELETE: NO USER, ID=${id}`})
-			const deleteInfo = {
+			const deletedInfo = {
 				deleted: true,
 				deleted_at: date()
 			}
-			json.rows[idx] = Object.assign(userToDelete, deleteInfo)
+			json.rows[idx] = Object.assign(userToDelete, deletedInfo)
 
 			return fs.writeFile(USERS, json, (err) => {
 				if(err) return cb(err)
@@ -108,18 +82,20 @@ module.exports = {
 			})
 		})
 	},
-	getAllUsers: function (cb) {
-		return fs.readFile(USERS, (err, users) => {
+	getAll: function (cb) {
+		return fs.readFile(USERS, (err, data) => {
 			if(err) return cb(err)
-			cb(null, users)
+			const json = JSON.parse(data)
+			cb(null, json.rows)
 		})
-	}
+	},
 }
 
+// get array index by match on object property
 function getIdx (list, match) {
-	const { input, target } = match
+	const { query, target } = match
 	for(let i = 0; i < list.length; i++) {
-		if(list[i][target] === input) return i
+		if(list[i][target] === query) return i
 	}
 	return null
 }

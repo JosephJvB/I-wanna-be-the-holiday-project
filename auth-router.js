@@ -11,7 +11,8 @@ const users = require('./users-db-service')
 router.use(express.json())
 
 router.post('/register', (req, res, next) => {
-	return users.findUserByName(req.body.username, (err, user) => {
+	const params = {query: req.body.username, target: 'username'}
+	return users.find(params, (err, user) => {
 		// on-error
 		if(err) {
 			console.log('DB_READ_ERROR @ "/register":', err)
@@ -28,7 +29,7 @@ router.post('/register', (req, res, next) => {
 			created_at: Date()
 		}
 		
-		return users.createUser(newUser, (err, createdUser) => {
+		return users.create(newUser, (err, createdUser) => {
 			if(err) return res.status(500).json({message: err.message})
 			// give web access
 			const token = getToken(createdUser)
@@ -39,8 +40,8 @@ router.post('/register', (req, res, next) => {
 
 router.post('/login', (req, res, next) => {
 	// does user exist
-	return users.findUserByName(req.body.username, (err, user) => {
-		// on-error
+	const params = {query: req.body.username, target: 'username'}
+	return users.find(params, (err, user) => {
 		if(err) {
 			console.log('DB_READ_ERROR @ "/login":', err)
 			return res.status(500).json({message: err.message})
@@ -54,8 +55,8 @@ router.post('/login', (req, res, next) => {
 			return res.status(400).send({message: 'Incorrect password'})
 		}
 		
-		// update user login info
-		users.updateUser(user.id, {last_login_at: Date()}, (err, updatedUser) => {
+		// update user last_login date
+		users.update(user.id, {last_login_at: Date()}, (err, updatedUser) => {
 			if(err) return console.log('DB_WRITE_ERROR @ "/login":', err)
 			// give user web access
 			const token = getToken(updatedUser)
@@ -65,12 +66,15 @@ router.post('/login', (req, res, next) => {
 })
 
 // TOOL-BOX
-
+// . bcrypt(hash&match)
 function getHash (password) {
-	const SALT_ROUNDS = 5
+	const SALT_ROUNDS = 1
 	return bcrypt.hashSync(password, SALT_ROUNDS)
 }
-
+function getMatch (password, hash) {
+	return bcrypt.compareSync(password, hash)
+}
+// . jsonwebtoken(sign)
 function getToken (user) {
 	const payload = {
 		id: user.id,
@@ -80,9 +84,6 @@ function getToken (user) {
 	return jwt.sign(payload, process.env.AUTH_SECRET, opts)
 }
 
-function getMatch (password, hash) {
-	return bcrypt.compareSync(password, hash)
-}
 
 
 
