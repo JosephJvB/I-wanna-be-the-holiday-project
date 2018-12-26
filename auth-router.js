@@ -28,7 +28,9 @@ router.post('/register', (req, res, next) => {
 		const newUser = {
 			username: req.body.username,
 			hash: getHash(req.body.password),
-			created_at: Date()
+			created_at: Date(),
+			deleted: false,
+			deleted_at: null
 		}
 		
 		return users.create(newUser, (err, createdUser) => {

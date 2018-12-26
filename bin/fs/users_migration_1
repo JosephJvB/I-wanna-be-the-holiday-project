@@ -8,7 +8,7 @@ const args = process.argv.slice(2)
 
 if(!args[0]) return console.log('❌ no command given')
 
-const USERS = path.join(__dirname, '../USERS_TABLE.json')
+const USERS = path.join(__dirname, '../../USERS_TABLE.json')
 const SCHEMA = JSON.stringify({
   meta: [
     {id: "number"},
