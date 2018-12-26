@@ -26,18 +26,20 @@ const SCHEMA = JSON.stringify({
 switch(args[0].toLowerCase()) {
   case 'up': {
     if(fs.existsSync(USERS)) console.log('❌ users table already exists, migrate "down" to drop table.')
-    else fs.writeFile(USERS, SCHEMA, (err) => {
+    else return fs.writeFile(USERS, SCHEMA, (err) => {
       if(err) console.log('❌ ERROR @ MIGRATE_UP: USERS')
-      else return console.log('✅  USERS up')
+      else console.log('✅  USERS up')
+      return
     })
   }
   break;
   case 'down': {
     if(!fs.existsSync(USERS)) console.log('❌ cannot drop table users: table does not exist')
     // fs.unlink will remove a file - weird name for the method
-    else fs.unlink(USERS, (err) => {
+    else return fs.unlink(USERS, (err) => {
       if(err) console.log('❌ ERROR @ MIGRATE_DOWN: USERS')
-      else return console.log('✅  USERS down')
+      else console.log('✅  USERS down')
+      return
     })
   }
   break;

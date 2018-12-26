@@ -7,3 +7,4 @@
   - queue reads FILE_DB
   - inserts all `{temp: true}` entries into SQL_DB & updates entries as `{temp: false}`
 
+When commenting my queries, I like phrasing the comments as questions: "does the user exist?" cos it explains the question that the query is trying to answer 💁

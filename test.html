@@ -10,11 +10,13 @@
 		<input type="text" id="user">
 		<label >PASSWORD:</label>
 		<input type="text" id="pass">
-		<button id="x">register</button>
-		<button id="y">login</button>
+		<button>register</button>
+		<button>login</button>
 	</form>
 	<script>
-		function send (e) {
+	// test login and register
+		function doFetch (e) {
+			e.preventDefault()
 			const user = document.getElementById('user').value
 			const pass = document.getElementById('pass').value
 			const route = e.target.innerText
@@ -30,17 +32,15 @@
 				}
 			})
 			.then(res => res.json())
-			.then(console.log)
+			.then(json => {
+				if(json.error) return console.error(json.message)
+				// set json token to window. I dunno what to do with it lol
+				else window.JWT = json.token
+				console.log(window.JWT)
+			})
 			.catch(console.error)			
 		}
-		document.getElementById('x').addEventListener('click', (e) => {
-			e.preventDefault()
-			send(e)
-		})
-		document.getElementById('y').addEventListener('click', (e) => {
-			e.preventDefault()
-			send(e)
-		})
+		document.querySelectorAll('button').forEach(b => b.addEventListener('click', doFetch))
 	</script>
 </body>
 </html>
