@@ -12,8 +12,8 @@ const users = require('./users-db-service')
 router.use(express.json())
 
 router.post('/register', (req, res, next) => {
-	const params = {query: req.body.username, target: 'username'}
 	// does user already exist?
+	const params = {query: req.body.username, target: 'username'}
 	return users.find(params, (err, user) => {
 		if(err) {
 			console.log('DB_READ_ERROR @ "/register":', err)

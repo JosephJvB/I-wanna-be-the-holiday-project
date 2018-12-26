@@ -54,7 +54,14 @@
       "hash": "$2a$04$BEL2zCP8NuXulCne/KUQhO2GexfRfeFFAgx48rLOsZDOjyR7Ubksy",
       "created_at": "Wed Dec 26 2018 19:52:54 GMT+1300 (NZDT)",
       "id": 5
+    },
+    {
+      "username": "howie",
+      "hash": "$2a$04$uI95AkVYpcIUBbB/6UAQwu5Ax/zlfjjOZfNhSQH/yv9cmxeRKxptW",
+      "created_at": "Wed Dec 26 2018 20:12:54 GMT+1300 (NZDT)",
+      "id": 6,
+      "last_login_at": "Wed Dec 26 2018 20:13:05 GMT+1300 (NZDT)"
     }
   ],
-  "next_user_id": 6
+  "next_user_id": 7
 }
