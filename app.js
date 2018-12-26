@@ -1,5 +1,4 @@
 // revisiting auth
-// oh create your own .env thing
 // maybe add some helmet/cors stuff for security revision stuff?
 const path = require('path')
 const express = require('express')

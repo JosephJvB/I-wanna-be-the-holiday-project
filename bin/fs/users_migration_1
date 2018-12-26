@@ -17,7 +17,8 @@ const SCHEMA = JSON.stringify({
     {last_login_at: "date"},
     {created_at: "date"},
     {deleted: "boolean"},
-    {deleted_at: "date"}
+    {deleted_at: "date"},
+    {temp: "boolean"}
   ],
   rows: [],
   next_user_id: 1

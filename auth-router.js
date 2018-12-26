@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const users = require('./users-db-service')
+const users = require('./users-fs-service')
 
 // TODO: full async/await refactor to avoid callback-hell and sync-city
 // . users-service to use util.promisify() fs methods
@@ -30,7 +30,8 @@ router.post('/register', (req, res, next) => {
 			hash: getHash(req.body.password),
 			created_at: Date(),
 			deleted: false,
-			deleted_at: null
+			deleted_at: null,
+			temp: true
 		}
 		
 		return users.create(newUser, (err, createdUser) => {
@@ -61,8 +62,12 @@ router.post('/login', (req, res, next) => {
 			return res.status(400).json(err)
 		}
 		
-		// update user last_login date
-		users.update(user.id, {last_login_at: Date()}, (err, updatedUser) => {
+		// update user last_login date&temp
+		const nextData = {
+			last_login_at: Date(),
+			temp: true
+		}
+		users.update(user.id, nextData, (err, updatedUser) => {
 			if(err) return console.log('DB_WRITE_ERROR @ "/login":', err)
 			// give user web access
 			const token = getToken(updatedUser)
