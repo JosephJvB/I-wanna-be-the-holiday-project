@@ -3,6 +3,7 @@ const router = express.Router()
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const users = require('./users-fs-service')
+const queue = require('./queue')
 
 // TODO: full async/await refactor to avoid callback-hell and sync-city
 // . users-service to use util.promisify() fs methods
@@ -10,6 +11,31 @@ const users = require('./users-fs-service')
 // by the way what the heck do I even do with tokens lol
 
 router.use(express.json())
+
+router.get('/refresh-test', (req, res, next) => {
+	users.getAll((err, allUsers) => {
+		if(err) return console.log('ERROR AT GET ALL', err)
+		allUsers.forEach(user => {
+			// remove temp key from user before save to DB
+			const dbUser = Object.keys(user).reduce((acc, key) => {
+				if(key !== 'temp') acc[key] = user[key]
+				return acc
+			}, {})
+			// define job inside of queue.push, make sure it's named for logging
+			queue.push(function updateUserAsTemp(cb) {
+				// save each user to DB & update them as !temp
+				process.env.DB_CONN('users')
+				.insert(dbUser)
+				// wrap this users.update in a transaction to keen DB/FS in sync
+				.then(() => users.update(user.id, {temp: false}, (err) => {
+					if(err) return console.log('error at write!', err)
+					res.status(200).json({message: 'all users refreshed'})
+					setTimeout(cb, 1000)
+				}))
+			})
+		})
+	})
+})
 
 router.post('/register', (req, res, next) => {
 	// does user already exist?
