@@ -25,52 +25,6 @@
       "temp": "boolean"
     }
   ],
-  "rows": [
-    {
-      "username": "joe",
-      "hash": "$2a$05$iGYHNcrHakX63QKZA.TeJeUllGQexstwWc2H2naxAi9WVfGcXY0gi",
-      "created_at": "Wed Dec 26 2018 10:29:56 GMT+1300 (NZDT)",
-      "id": 1,
-      "last_login_at": "Wed Dec 26 2018 11:07:43 GMT+1300 (NZDT)",
-      "temp": false
-    },
-    {
-      "username": "joes",
-      "hash": "$2a$04$0GwH3Hz8ZBWR546mlBUNRedX6BGZZUbcde2R3z4Vu5r9CCcHG84wS",
-      "created_at": "Wed Dec 26 2018 11:45:06 GMT+1300 (NZDT)",
-      "id": 2,
-      "temp": false
-    },
-    {
-      "username": "joesasdasd",
-      "hash": "$2a$04$qZhtJnJmRMWrw2B81GYThuLI9pJpkgO09uCdaxzVUHzYvwTuuwaRS",
-      "created_at": "Wed Dec 26 2018 12:29:30 GMT+1300 (NZDT)",
-      "id": 3,
-      "temp": false
-    },
-    {
-      "username": "jo",
-      "hash": "$2a$04$XHi0Geitkwtoyrs6ZUhYseJkKOfJzh22ncHDQwUm9DTZm77MxobYG",
-      "created_at": "Wed Dec 26 2018 19:52:47 GMT+1300 (NZDT)",
-      "id": 4,
-      "last_login_at": "Wed Dec 26 2018 19:52:51 GMT+1300 (NZDT)",
-      "temp": false
-    },
-    {
-      "username": "asd",
-      "hash": "$2a$04$BEL2zCP8NuXulCne/KUQhO2GexfRfeFFAgx48rLOsZDOjyR7Ubksy",
-      "created_at": "Wed Dec 26 2018 19:52:54 GMT+1300 (NZDT)",
-      "id": 5,
-      "temp": false
-    },
-    {
-      "username": "howie",
-      "hash": "$2a$04$uI95AkVYpcIUBbB/6UAQwu5Ax/zlfjjOZfNhSQH/yv9cmxeRKxptW",
-      "created_at": "Wed Dec 26 2018 20:12:54 GMT+1300 (NZDT)",
-      "id": 6,
-      "last_login_at": "Wed Dec 26 2018 20:13:05 GMT+1300 (NZDT)",
-      "temp": false
-    }
-  ],
-  "next_user_id": 7
+  "rows": [],
+  "next_user_id": 1
 }
