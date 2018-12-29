@@ -92,6 +92,19 @@ router.post('/login', (req, res, next) => {
 	})
 })
 
+router.post('/logout', (req, res, next) => {
+	const params = {query: req.body.id, target: 'id'}
+	return activeUsers.find(params, (err, user) => {
+		if(err) return res.status(500).json({message: err.message, error: true})
+		if(!!user) {
+			activeUsers.handleLogout(user, (err, data) => {
+				if(err) return res.status(500).json({message: err.message, error: true})
+				res.status(200).json(data)
+			})
+		}
+	})
+})
+
 // TOOL-BOX
 // . bcrypt(hash&match)
 function getHash (password) { // used in `/register`

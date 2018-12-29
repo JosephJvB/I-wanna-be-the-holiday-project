@@ -45,16 +45,15 @@ module.exports = {
     return fs.readFile(PATH, (err, data) => {
       if(err) return cb(err)
       const json = JSON.parse(data)
-      const foundUser = json.rows.find(u => (u.id === id && u.token === token))
-      console.log('found user to logout', foundUser)
+      const before = json.rows // NOT SURE IF THIS WORKS TBH
       json.rows = json.rows.filter(user => {
         return (user.id !== id && user.token !== token)
       })
-      const afterLogout = json.rows.find(u => (u.id === id && u.token === token))
+      const after = json.rows // NOT SURE IF THIS WORKS TBH
       console.log('user after logout', afterLogout)
       return fs.writeFile(PATH, JSON.stringify(json, null, 2), (err) => {
         if(err) return cb(err)
-        return cb(null, user)
+        return cb(null, {before, after})
       })
     })
   }
