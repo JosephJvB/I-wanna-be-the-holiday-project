@@ -22,12 +22,8 @@
   - cors, helmet
 
 - I wanna cache the jwt: when we get to making a front end we are gonna use:
-  - and might as well try out redux bundler since friends think that is the bees-knees
-  ```js
-  const getPersistMiddleware = require('redux-persist-middleware').default
-  const { getConfiguredCache } = require('money-clip')
-  ```
-  .. err ah, what is the front end gonna do? I never think this far ahead. I just wanted to do auth-ish stuff.
+  - use Vue, try out some state management with VueX
+  - (want to try out redux bundler with react but we're in Vuetown now.)
 
 Not todos just notes
 ====================
