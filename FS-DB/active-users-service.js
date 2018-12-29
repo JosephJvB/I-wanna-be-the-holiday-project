@@ -29,11 +29,11 @@ module.exports = {
     })
   },
   handleLogin: function (user, cb) {
-    const { id, token } = user
+    const { id, token, username } = user
     return fs.readFile(PATH, (err, data) => {
       if(err) return cb(err)
       const json = JSON.parse(data)
-      json.rows.push({id, token})
+      json.rows.push({id, token, username})
       return fs.writeFile(PATH, JSON.stringify(json, null, 2), (err) => {
         if(err) return cb(err)
         return cb(null, user)
@@ -50,7 +50,6 @@ module.exports = {
         return (user.id !== id && user.token !== token)
       })
       const after = json.rows // NOT SURE IF THIS WORKS TBH
-      console.log('user after logout', afterLogout)
       return fs.writeFile(PATH, JSON.stringify(json, null, 2), (err) => {
         if(err) return cb(err)
         return cb(null, {before, after})

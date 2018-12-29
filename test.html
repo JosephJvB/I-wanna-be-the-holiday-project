@@ -12,6 +12,7 @@
 		<input type="text" id="pass">
 		<button>register</button>
 		<button>login</button>
+		<button>logout</button>
 	</form>
 	<script>
 	// test login and register
@@ -24,7 +25,8 @@
 				method: 'POST',
 				body: JSON.stringify({
 					username: user,
-					password: pass
+					password: pass,
+					id: window.USER ? window.USER.id : null
 					}),
 				headers: {
 					Accept: 'application/json',
@@ -36,6 +38,7 @@
 				if(json.error) return console.error(json.message)
 				// set json token to window. I dunno what to do with it lol
 				console.log(json)
+				window.USER = json
 			})
 			.catch(console.error)			
 		}
