@@ -52,7 +52,17 @@
       "deleted_at": null,
       "temp": true,
       "id": 3
+    },
+    {
+      "username": "asd",
+      "hash": "$2a$04$rwNDLrLZ2Bka3rinxM6TKuyi.iOvdDSbh6ARp93Za6EIDTy39/YsK",
+      "created_at": "Sun Dec 30 2018 09:17:14 GMT+1300 (NZDT)",
+      "deleted": false,
+      "deleted_at": null,
+      "temp": true,
+      "id": 4,
+      "last_login_at": "Sun Dec 30 2018 09:18:04 GMT+1300 (NZDT)"
     }
   ],
-  "next_user_id": 4
+  "next_user_id": 5
 }

@@ -48,7 +48,7 @@ module.exports = {
 
 			const json = JSON.parse(data)
 			const foundUser = json.rows.find(user => user.id === id)
-			if(!foundUser) return cb({message: `@UPDATE: NO USER, ID=${id}`})
+			if(!foundUser) return cb({message: `Could nto find user id=${id}`})
 			// update user @ rows[index]
 			const idx = getIdx(json.rows, {query: id, target: 'id'})
 		 	json.rows[idx] = Object.assign(foundUser, nextData)
@@ -67,15 +67,15 @@ module.exports = {
 			const json = JSON.parse(data)
 			// add deleted @ rows[index]
 			const idx = getIdx(json.rows, {query: id, target: 'id'})
+			if(!idx) return cb({message: `Could not find user id=${id}`})
 			const userToDelete = json.rows[idx]
-			if(!userToDelete) return cb({message: `@DELETE: NO USER, ID=${id}`})
 			const deletedInfo = {
 				deleted: true,
 				deleted_at: date()
 			}
 			json.rows[idx] = Object.assign(userToDelete, deletedInfo)
 
-			return fs.writeFile(USERS, json, (err) => {
+			return fs.writeFile(USERS, JSON.stringify(json, null, 2), (err) => {
 				if(err) return cb(err)
 				cb(null, id)
 			})
