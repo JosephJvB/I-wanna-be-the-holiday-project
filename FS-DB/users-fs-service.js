@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const USERS = path.join(__dirname, 'USERS_TABLE.json')
+const USERS = path.join(__dirname, 'FS-DB/tables/USERS_TABLE.json')
 
 /********
  METHODS

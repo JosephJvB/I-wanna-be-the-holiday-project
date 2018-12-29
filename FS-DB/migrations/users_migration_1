@@ -1,0 +1,31 @@
+#!/usr/bin/env node
+const path = require('path')
+const handleMigration = require('./handler')
+const args = process.argv.slice(2)
+
+//TODO: have all migrations live in migrations/ dir. Write a script to call them all in order by number
+// fs.readdir() get fileNames, order by number, then call them in order... how do that?
+
+if(!args[0]) return console.log('❌ no command given')
+
+const PATH = path.join(__dirname, '../tables/USERS_TABLE.json')
+const SCHEMA = JSON.stringify({
+  meta: [
+    {id: "number"},
+    {username: "string"},
+    {hash: "string"},
+    {last_login_at: "date"},
+    {created_at: "date"},
+    {deleted: "boolean"},
+    {deleted_at: "date"},
+    {temp: "boolean"}
+  ],
+  rows: [],
+  next_user_id: 1
+}, null, 2)
+
+handleMigration(args[0], {
+  NAME: 'USERS_TABLE',
+  PATH,
+  SCHEMA
+})

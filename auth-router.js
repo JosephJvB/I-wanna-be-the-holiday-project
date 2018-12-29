@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const users = require('./users-fs-service')
+const users = require('./FS-DB/users-fs-service')
 const queue = require('./queue')
 
 // TODO: full async/await refactor to avoid callback-hell and sync-city
