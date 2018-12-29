@@ -35,8 +35,7 @@
 			.then(json => {
 				if(json.error) return console.error(json.message)
 				// set json token to window. I dunno what to do with it lol
-				else window.JWT = json.token
-				console.log(window.JWT)
+				console.log(json)
 			})
 			.catch(console.error)			
 		}

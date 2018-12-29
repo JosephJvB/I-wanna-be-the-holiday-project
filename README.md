@@ -11,6 +11,8 @@
   - and then maybe I never read from the SQL db? I just read from the filesystem.
   - I can generate reports from the SQL db. I dunno.
 
+- I wanna build the login/register screen (with sweet-alerts)
+
 - I wanna build the mail-client.
   - users can reset their passwords by mail.
   - maybe even look at 2fa stuff? Is it hard to send texts from the web?

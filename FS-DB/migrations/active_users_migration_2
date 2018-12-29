@@ -1,0 +1,21 @@
+#!/usr/bin/env node
+const path = require('path')
+const args = process.argv.slice(2)
+const handleMigration = require('./handler')
+
+if(!args[0]) return console.log('❌ no command given')
+
+const PATH = path.join(__dirname, '../tables/ACTIVE_USERS_TABLE.json')
+const SCHEMA = JSON.stringify({
+  meta: [
+    {id: 'number'},
+    {token: 'string'}
+  ],
+  rows: []
+}, null, 2)
+
+handleMigration(args[0], {
+  NAME: 'ACTIVE_USERS_TABLE',
+  PATH,
+  SCHEMA
+})
