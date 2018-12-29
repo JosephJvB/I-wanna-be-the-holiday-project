@@ -1,45 +1,13 @@
 <h1 align="center">I WANNA BUILD THE APP</h1>
 
 - I wanna queue the sql entries
-  - save-temp to the file-system, then gradually save file-system entries to a SQL db via job-queue.
-  - general idea:
-  ```js
-  client.post()
-  .then(data => {
-    data.temp = true
-    fileSystem.write(data)
-  })
-  // ...meanwhile
-  queue.poll(fileSystem.read, (data) => {
-    if (data.rows.find(row => row.temp)) {
-      const tempEntries = data.rows.filter(row => row.temp)
-      console.log(tempEntries.length, 'save-temp jobs pushed to the queue')
-      tempEntries.forEach(entry => queue.push('save-temp', entry))
-    } else {
-      console.log('no temp entries')
-    }
-  })
-  // job
-  {
-    name: 'save-temp',
-    perform: function(entry) {
-      // check that entry is still temp
-      fs.read(entry.id, (data) => {
-        if (!data.temp) return
-        // insert into db 
-        knex('tablename')
-          .insert(entry)
-          .then(() => {
-            // write back to file system with temp = false
-            fs.read('all', (data) => {
-              data.rows[entryIdx].temp = false
-              fs.write(data)
-            })
-          })
-      })
-    }
-  }
-  ```
+  - [x] save-temp to the file-system, save fs-entries to a SQL db via job-queue.
+  - When do I trigger the queue? Options(best to worst):
+    - queue autostart when it has items in it
+    - queue trigger by cron-job
+    - queue trigger when an endpoint is hit(could be on logout?)
+    - track number of active users: if it is below a threshold: trigger queue
+    - queue trigger when it has n number of jobs in it
   - and then maybe I never read from the SQL db? I just read from the filesystem.
   - I can generate reports from the SQL db. I dunno.
 

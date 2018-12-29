@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+const USERS = path.join(__dirname, 'USERS_TABLE.json')
 
 /********
  METHODS
@@ -12,8 +13,6 @@ getAll() => rows
 TO ADD
 Do I want to have some functionality like feathers where if you pass array it does array stuff
 */
-
-const USERS = path.join(__dirname, 'USERS_TABLE.json')
 
 module.exports = {
 	find: function (params, cb) {

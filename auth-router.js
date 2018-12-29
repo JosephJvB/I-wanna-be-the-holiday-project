@@ -12,6 +12,7 @@ const queue = require('./queue')
 
 router.use(express.json())
 
+// move this asap.
 router.get('/refresh-test', (req, res, next) => {
 	users.getAll((err, allUsers) => {
 		if(err) return console.log('ERROR AT GET ALL', err)
@@ -33,7 +34,8 @@ router.get('/refresh-test', (req, res, next) => {
 					setTimeout(cb, 1000)
 				}))
 			})
-		})
+
+		}) // end forEach
 	})
 })
 
