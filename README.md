@@ -27,6 +27,14 @@
   ```
   .. err ah, what is the front end gonna do? I never think this far ahead. I just wanted to do auth-ish stuff.
 
+Not todos just notes
+====================
+- one thing that sucks about this filesystem DB is that you have to parse a whole 'table' too often.
+  - to get a single point of data
+  - to do any write you must parse the table, update the data, then re-write the whole table.
+- maybe that could be improved by using a readstream?
+- another cool fs method I havent used is fs.watch
+
 Init readme notes
 =================
 - revise authorization, hashing passwords and JWTs
