@@ -6,6 +6,8 @@
   "dependencies": {
     "bcrypt": "^1.0.3",
     "express": "^4.16.4",
+    "express-slow-down": "^1.1.1",
+    "helmet": "^3.15.0",
     "jsonwebtoken": "^8.3.0",
     "knex": "^0.15.2",
     "pg": "^7.6.1",
