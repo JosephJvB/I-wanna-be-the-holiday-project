@@ -1,12 +1,18 @@
 <h1 align="center">I WANNA BUILD THE APP</h1>
 
+- I wanna refactor the callbacks into async/await
+  - MID REFACTOR, todo:
+    - test login async
+    - refactor logout
+    - refactor active-users-service to async
+
 - I wanna queue the sql entries
   - [x] save-temp to the file-system, save fs-entries to a SQL db via job-queue.
   - When do I trigger the queue? Options(best to worst):
     - queue autostart when it has items in it
     - queue trigger by cron-job
+    - track number of active users: if it is below a threshold: trigger queue(but then I need a function to poll on active users & queue-length. How do that?)
     - queue trigger when an endpoint is hit(could be on logout?)
-    - track number of active users: if it is below a threshold: trigger queue
     - queue trigger when it has n number of jobs in it
   - and then maybe I never read from the SQL db? I just read from the filesystem.
   - I can generate reports from the SQL db. I dunno.
