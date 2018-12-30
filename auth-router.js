@@ -6,11 +6,6 @@ const queue = require('./queue')
 const users = require('./FS-DB/users-service')
 const activeUsers = require('./FS-DB/active-users-service')
 
-// TODO: full async/await refactor to avoid callback-hell and sync-city
-// . users-service to use util.promisify() fs methods
-// . use async for bcrypt and jwt
-// by the way what the heck do I even do with tokens lol
-
 router.use(express.json())
 
 router.post('/register', async (req, res, next) => {
@@ -25,22 +20,17 @@ router.post('/register', async (req, res, next) => {
 	// hash password > create token > save to DB
 		const newUser = {
 			username: req.body.username,
-			hash: getHash(req.body.password),
+			hash: await getHash(req.body.password),
 			created_at: Date(),
 			deleted: false,
 			deleted_at: null,
 			temp: true
 		}
 		const createdUser = await users.create(newUser)
-		console.log('made THIS', createdUser)
 		createdUser.token = getToken(createdUser)
-		return res.status(200).json(createdUser)
-			// return activeUsers.handleLogin(createdUser, (err, user) => {
-			// 	if(err) return res.status(500).json({message: err.message, error: true})
-			// 	return res.status(200).json(user)
-			// })
+		await activeUsers.handleLogin(createdUser)
+		res.status(200).json(createdUser)
 	} catch(err) {
-		console.log(err)
 		res.status(500).json({message: err.message, error: true})
 	}
 })
@@ -48,62 +38,59 @@ router.post('/register', async (req, res, next) => {
 // defos need async await here, callback hell is upon us
 router.post('/login', async (req, res, next) => {
 	try {
-	// does user exist?
-	const params = {query: req.body.username, target: 'username'}
-	const user = await users.find(params)
-	if(!user) {
-		const err = { message: 'User does not exist', error: true }
-		return res.status(400).json(err)
-	}
-	// is the user already logged in?
-	// return activeUsers.find({query: user.id, target: 'id'})
-	// 	if(!!activeUser) {
-	// 		return res.status(400).json({message: 'User is already logged in', error: true})
-	// 	}
-	// did user enter correct password?
-	const passwordMatch = getMatch(req.body.password, user.hash)
-	if(!passwordMatch) {
-		const err = { message: 'Incorrect password', error: true }
-		return res.status(400).json(err)
-	}
-			
-			// update user last_login date&temp
-			const nextData = {
-				last_login_at: Date(),
-				temp: true
+		// does user exist?
+		const params = {query: req.body.username, target: 'username'}
+		const user = await users.find(params)
+		if(!user) {
+			const err = { message: 'User does not exist', error: true }
+			return res.status(400).json(err)
+		}
+		// is the user already logged in?
+		const activeUser = await activeUsers.find({query: user.id, target: 'id'})
+			if(!!activeUser) {
+				return res.status(400).json({message: 'User is already logged in', error: true})
 			}
-	const updatedUser = await users.update(user.id, nextData)
-	updatedUser.token = getToken(updatedUser)
-	// return activeUsers.handleLogin(updatedUser, (err, user) => {
-	// 	if(err) return res.status(500).json({message: err.message, error: true})
-	// 	res.status(200).json(user)
-	// })
-	return updatedUser
-	} catch (err) {
+		// did user enter correct password?
+		const passwordMatch = await getMatch(req.body.password, user.hash)
+		if(!passwordMatch) {
+			const err = { message: 'Incorrect password', error: true }
+			return res.status(400).json(err)
+		}
+				
+		// update user last_login date&temp
+		const nextData = {
+			last_login_at: Date(),
+			temp: true
+		}
+		const updatedUser = await users.update(user.id, nextData)
+		updatedUser.token = getToken(updatedUser)
+		await activeUsers.handleLogin(updatedUser)
+		res.status(200).json(updatedUser)
+	} catch(err) {
 		return res.status(500).json({message: err.message, error: true})
 	}
 })
 
-router.post('/logout', (req, res, next) => {
-	const params = {query: req.body.id, target: 'id'}
-	return activeUsers.find(params, (err, user) => {
-		if(err) return res.status(500).json({message: err.message, error: true})
+router.post('/logout', async (req, res, next) => {
+	try {
+		const params = {query: req.body.id, target: 'id'}
+		const user = await activeUsers.find(params)
 		if(!user) return res.status(400).json({message: 'User is not logged in', error: true})
-		activeUsers.handleLogout(user, (err) => {
-			if(err) return res.status(500).json({message: err.message, error: true})
-			res.status(200).json({message: 'logout success'})
-		})
-	})
+		await activeUsers.handleLogout(user)
+		res.status(200).json({message: 'logout success'})
+	} catch(err) {
+		res.status(500).json({message: err.message, error: true})
+	}
 })
 
 // TOOL-BOX
 // . bcrypt(hash&match)
 function getHash (password) { // used in `/register`
 	const SALT_ROUNDS = 1
-	return bcrypt.hashSync(password, SALT_ROUNDS)
+	return bcrypt.hash(password, SALT_ROUNDS) // should return a promise
 }
 function getMatch (password, hash) { // used in `/login`
-	return bcrypt.compareSync(password, hash)
+	return bcrypt.compare(password, hash)
 }
 // . jsonwebtoken(sign)
 function getToken (user) { // used in `/login` & `/register`

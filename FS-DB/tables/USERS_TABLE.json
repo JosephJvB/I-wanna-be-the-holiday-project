@@ -162,7 +162,26 @@
       "deleted_at": null,
       "temp": true,
       "id": 15
+    },
+    {
+      "username": "ssss",
+      "hash": "$2a$04$hssFDZUZD9YGXVtHiZzMMeYJBgAHtrvZAKkr.rSRDSqJNnFbzmnfi",
+      "created_at": "Mon Dec 31 2018 00:04:34 GMT+1300 (NZDT)",
+      "deleted": false,
+      "deleted_at": null,
+      "temp": true,
+      "id": 16
+    },
+    {
+      "username": "sssssss",
+      "hash": "$2a$04$Vbn59PFzL9rG2YbvOYLYtezbVjarE7Hfk/Q6cUcLHOY2XKa8IeWji",
+      "created_at": "Mon Dec 31 2018 00:05:12 GMT+1300 (NZDT)",
+      "deleted": false,
+      "deleted_at": null,
+      "temp": true,
+      "id": 17,
+      "last_login_at": "Mon Dec 31 2018 00:05:18 GMT+1300 (NZDT)"
     }
   ],
-  "next_user_id": 16
+  "next_user_id": 18
 }

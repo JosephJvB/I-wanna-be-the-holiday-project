@@ -1,4 +1,7 @@
 const fs = require('fs')
+const util = require('util')
+const asyncReadFile = util.promisify(fs.readFile)
+const asyncWriteFile = util.promisify(fs.writeFile)
 const path = require('path')
 const PATH = path.join(__dirname, 'tables/ACTIVE_USERS_TABLE.json')
 
@@ -12,46 +15,34 @@ handleLogout({id, token}) => rows = rows.filter(u => u.id !== id && u.token !== 
 */
 
 module.exports = {
-  getAll: function (cb) {
-    return fs.readFile(PATH, (err, data) => {
-      if(err) return cb(err)
-      const json = JSON.parse(data)
-      return cb(null, json.rows)
-    })   
+  async getAll () {
+    const data = await asyncReadFile(PATH)
+    const json = JSON.parse(data)
+    return json.rows
   },
-  find: function (params, cb) {
+  async find (params) {
     const { query, target } = params
-    return fs.readFile(PATH, (err, data) => {
-      if(err) return cb(err)
-      const json = JSON.parse(data)
-      const activeUser = json.rows.find(user => user[target] === query)
-      return cb(null, activeUser)
-    })
+    const data = await asyncReadFile(PATH)
+    const json = JSON.parse(data)
+    const activeUser = json.rows.find(user => user[target] === query)
+    return activeUser
   },
-  handleLogin: function (user, cb) {
+  async handleLogin (user) {
     const { id, token, username } = user
-    return fs.readFile(PATH, (err, data) => {
-      if(err) return cb(err)
-      const json = JSON.parse(data)
-      json.rows.push({id, token, username})
-      return fs.writeFile(PATH, JSON.stringify(json, null, 2), (err) => {
-        if(err) return cb(err)
-        return cb(null, user)
-      })
-    })
+    const data = await asyncReadFile(PATH)
+    const json = JSON.parse(data)
+    json.rows.push({id, token, username})
+    await asyncWriteFile(PATH, JSON.stringify(json, null, 2))
+    return user
   },
-  handleLogout: function (user, cb) {
+  async handleLogout (user) {
     const { id, token } = user
-    return fs.readFile(PATH, (err, data) => {
-      if(err) return cb(err)
-      const json = JSON.parse(data)
-      json.rows = json.rows.filter(user => {
-        return (user.id !== id && user.token !== token)
-      })
-      return fs.writeFile(PATH, JSON.stringify(json, null, 2), (err) => {
-        if(err) return cb(err)
-        return cb(null)
-      })
+    const data = await asyncReadFile(PATH)
+    const json = JSON.parse(data)
+    json.rows = json.rows.filter(user => {
+      return (user.id !== id && user.token !== token)
     })
+    await asyncWriteFile(PATH, JSON.stringify(json, null, 2))
+    return
   }
 }
