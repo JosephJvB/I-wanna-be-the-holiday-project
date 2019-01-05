@@ -30,6 +30,7 @@ router.post('/register', async (req, res, next) => {
 		createdUser.token = createToken(createdUser)
 		await activeUsers.handleLogin(createdUser)
 		res.status(200).json(createdUser)
+		next()
 	} catch(err) {
 		res.status(500).json({message: err.message, error: true})
 	}
@@ -66,6 +67,7 @@ router.post('/login', async (req, res, next) => {
 		updatedUser.token = createToken(updatedUser)
 		await activeUsers.handleLogin(updatedUser)
 		res.status(200).json(updatedUser)
+		next()
 	} catch(err) {
 		return res.status(500).json({message: err.message, error: true})
 	}
@@ -80,8 +82,40 @@ router.post('/logout', async (req, res, next) => {
 		if(!user) return res.status(400).json({message: 'User is not logged in', error: true})
 		await activeUsers.handleLogout(user)
 		res.status(200).json({message: 'logout success'})
+		next()
 	} catch(err) {
 		res.status(500).json({message: err.message, error: true})
+	}
+})
+
+// connect last so cleanup runs after other requests (like an after-hook)
+router.all('*', async (req, res, next) => {
+	try {
+		// console.log(req.url)
+		const allUsers = await users.getAll()
+		const tempUsers = allUsers.filter(user => user.temp)
+		if(tempUsers.length > 0) {
+			tempUsers.forEach((user, i) => {
+				const dbUser = Object.keys(user).reduce((acc, key) => {
+					if(key !== 'temp') acc[key] = user[key]
+					return acc
+				}, {})
+				queue.push(async function refreshTempUser(cb) {
+					// TODO: wrap this in knex transaction
+					// eg: if users.update fails, db rolls back also.
+					const userExists = await process.env.DB_CONN('users').where({id: user.id}).first('id')
+					if(!!userExists) {
+						await process.env.DB_CONN('users').update(dbUser)
+					} else {
+						await process.env.DB_CONN('users').insert(dbUser)
+					}
+					await users.update(user.id, {temp: false})
+					cb()
+				})
+			})
+		}
+	} catch (err) {
+		return res.status(500).json({message: err.message, error: true})
 	}
 })
 
@@ -89,7 +123,7 @@ router.post('/logout', async (req, res, next) => {
 // used in `/register`
 function getHash (password) {
 	const SALT_ROUNDS = 1
-	return bcrypt.hash(password, SALT_ROUNDS) // should return a promise
+	return bcrypt.hash(password, SALT_ROUNDS)
 }
 // used in `/login`
 function getMatch (password, hash) {
@@ -113,7 +147,6 @@ function verifyToken (token) {
 module.exports = router
 
 /* GRAVEYARD
-
 // sql queue
 router.get('/refresh-test', (req, res, next) => {
 	console.log('hi')

@@ -27,15 +27,24 @@
   ],
   "rows": [
     {
-      "username": "asd",
-      "hash": "$2a$04$nuM90dT1nGGmzwFVLpet2.uXXRBweKR2YvfQDoTUDe8hsDAaI3CDG",
-      "created_at": "Sat Jan 05 2019 17:14:15 GMT+1300 (NZDT)",
+      "username": "x",
+      "hash": "$2a$04$9ZbWave6GAIUooqa8TShK.TyEPDgNiHWlu7AV8ocnhbDJ2uHs0dGO",
+      "created_at": "Sat Jan 05 2019 18:16:11 GMT+1300 (NZDT)",
       "deleted": false,
       "deleted_at": null,
-      "temp": true,
+      "temp": false,
       "id": 1,
-      "last_login_at": "Sat Jan 05 2019 17:19:05 GMT+1300 (NZDT)"
+      "last_login_at": "Sat Jan 05 2019 18:16:21 GMT+1300 (NZDT)"
+    },
+    {
+      "username": "xs",
+      "hash": "$2a$04$tooh6Lmy0sRLy8OTIsIjE.Y/RlrPVFDCeZJbal1xCdoh/IsRxuA9G",
+      "created_at": "Sat Jan 05 2019 18:19:52 GMT+1300 (NZDT)",
+      "deleted": false,
+      "deleted_at": null,
+      "temp": false,
+      "id": 2
     }
   ],
-  "next_user_id": 2
+  "next_user_id": 3
 }

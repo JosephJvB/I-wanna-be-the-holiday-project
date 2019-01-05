@@ -17,7 +17,8 @@
   "scripts": {
     "start": "node app",
     "burn:users": "node FS-DB/migrations/users_migration_1 down && node FS-DB/migrations/active_users_migration_2 down && knex migrate:rollback",
-    "make:users": "node FS-DB/migrations/users_migration_1 up && node FS-DB/migrations/active_users_migration_2 up && knex migrate:latest"
+    "make:users": "node FS-DB/migrations/users_migration_1 up && node FS-DB/migrations/active_users_migration_2 up && knex migrate:latest",
+    "reset:users": "node FS-DB/migrations/users_migration_1 down && node FS-DB/migrations/active_users_migration_2 down && knex migrate:rollback && node FS-DB/migrations/users_migration_1 up && node FS-DB/migrations/active_users_migration_2 up && knex migrate:latest"
   },
   "keywords": [],
   "author": "",
