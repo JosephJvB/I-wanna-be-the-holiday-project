@@ -96,18 +96,24 @@ router.all('*', async (req, res, next) => {
 		const tempUsers = allUsers.filter(user => user.temp)
 		if(tempUsers.length > 0) {
 			tempUsers.forEach((user, i) => {
-				const dbUser = Object.keys(user).reduce((acc, key) => {
-					if(key !== 'temp') acc[key] = user[key]
-					return acc
-				}, {})
 				queue.push(async function refreshTempUser(cb) {
 					// TODO: wrap this in knex transaction
 					// eg: if users.update fails, db rolls back also.
-					const userExists = await process.env.DB_CONN('users').where({id: user.id}).first('id')
-					if(!!userExists) {
-						await process.env.DB_CONN('users').update(dbUser)
+					const userFromDB = await process.env.DB_CONN('users').where({id: user.id}).first()
+					if(!!userFromDB) {
+						// only pass keys:values to update that need updating
+						const updateUser = Object.keys(userFromDB).reduce((u, key) => {
+							if(userFromDB[key] !== user[key]) u[key] = user[key]
+							return u
+						}, {})
+						await process.env.DB_CONN('users').update(updateUser)
 					} else {
-						await process.env.DB_CONN('users').insert(dbUser)
+						// dont insert temp property to DB
+						const insertUser = Object.keys(user).reduce((u, key) => {
+							if(key !== 'temp') u[key] = user[key]
+							return u
+						}, {})
+						await process.env.DB_CONN('users').insert(insertUser)
 					}
 					await users.update(user.id, {temp: false})
 					cb()
@@ -145,42 +151,3 @@ function verifyToken (token) {
 }
 
 module.exports = router
-
-/* GRAVEYARD
-// sql queue
-router.get('/refresh-test', (req, res, next) => {
-	console.log('hi')
-	users.getAll((err, allUsers) => {
-		if(err) return console.log('ERROR AT GET ALL', err)
-		allUsers.forEach((user, i) => {
-			// remove temp key from user before save to DB
-			const dbUser = Object.keys(user).reduce((acc, key) => {
-				if(key !== 'temp') acc[key] = user[key]
-				return acc
-			}, {})
-			// define job inside of queue.push, make sure it's named for logging
-			queue.push(function updateUserAsTemp(cb) {
-				// save each user to DB & update them as !temp
-				process.env.DB_CONN.transaction(trx => {
-					return process.env.DB_CONN('users')
-					.insert(dbUser)
-					.transacting(trx)
-					// wrap this users.update in a transaction to keen DB/FS in sync
-					.then(() => users.update(user.id, {temp: false}, (err) => {
-						if(err) return trx.rollback(err)
-						setTimeout(cb, 1000)
-						const isLastUser = (i + 1 === allUsers.length)
-						if(isLastUser) {
-							res.status(200).json({message: 'all users refreshed'})
-						}
-					}))
-					.then(trx.commit)
-					.catch(trx.rollback)
-				})
-			})
-
-		}) // end forEach
-	})
-})
-
-*/

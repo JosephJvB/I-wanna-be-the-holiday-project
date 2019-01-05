@@ -3,6 +3,7 @@
 const express = require('express')
 const helmet = require('helmet')
 const speedCap = require('express-slow-down')({
+	// if more than 50req in 5 mins, delay next requests by 1000ms
 	windowMs: 5 * 60 * 1000, // 5 minutes
 	delayAfter: 50,
 	delayMs: 1000

@@ -7,8 +7,11 @@ queue.on('success', (result, job) => console.log('[QUEUE]: complete job', getJob
 queue.on('end', () => console.log('[QUEUE]: queue empty'))
 
 function getJobName (job) {
-  const name = job.toString().split('function')[1].split('(cb)')[0].trim()
-  return (name || 'no job name')
+  let name = 'NOT NAMED'
+  try {
+    name = job.toString().split('function')[1].split('(cb)')[0].trim()
+  } catch (e) {/* swallow error in-case string parsing fails */}
+  return name
 }
 
 module.exports = queue
