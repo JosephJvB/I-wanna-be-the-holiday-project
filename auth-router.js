@@ -27,7 +27,7 @@ router.post('/register', async (req, res, next) => {
 			temp: true
 		}
 		const createdUser = await users.create(newUser)
-		createdUser.token = getToken(createdUser)
+		createdUser.token = createToken(createdUser)
 		await activeUsers.handleLogin(createdUser)
 		res.status(200).json(createdUser)
 	} catch(err) {
@@ -47,23 +47,23 @@ router.post('/login', async (req, res, next) => {
 		}
 		// is the user already logged in?
 		const activeUser = await activeUsers.find({query: user.id, target: 'id'})
-			if(!!activeUser) {
-				return res.status(400).json({message: 'User is already logged in', error: true})
-			}
+		if(!!activeUser) {
+			return res.status(400).json({message: 'User is already logged in', error: true})
+		}
 		// did user enter correct password?
 		const passwordMatch = await getMatch(req.body.password, user.hash)
 		if(!passwordMatch) {
 			const err = { message: 'Incorrect password', error: true }
 			return res.status(400).json(err)
 		}
-				
+		
 		// update user last_login date&temp
 		const nextData = {
 			last_login_at: Date(),
 			temp: true
 		}
 		const updatedUser = await users.update(user.id, nextData)
-		updatedUser.token = getToken(updatedUser)
+		updatedUser.token = createToken(updatedUser)
 		await activeUsers.handleLogin(updatedUser)
 		res.status(200).json(updatedUser)
 	} catch(err) {
@@ -73,7 +73,9 @@ router.post('/login', async (req, res, next) => {
 
 router.post('/logout', async (req, res, next) => {
 	try {
-		const params = {query: req.body.id, target: 'id'}
+		if(!req.body.token) return res.status(400).json({message: 'No user token on request body', error: true})
+		const token = verifyToken(req.body.token)
+		const params = {query: token.id, target: 'id'}
 		const user = await activeUsers.find(params)
 		if(!user) return res.status(400).json({message: 'User is not logged in', error: true})
 		await activeUsers.handleLogout(user)
@@ -84,16 +86,17 @@ router.post('/logout', async (req, res, next) => {
 })
 
 // TOOL-BOX
-// . bcrypt(hash&match)
-function getHash (password) { // used in `/register`
+// used in `/register`
+function getHash (password) {
 	const SALT_ROUNDS = 1
 	return bcrypt.hash(password, SALT_ROUNDS) // should return a promise
 }
-function getMatch (password, hash) { // used in `/login`
+// used in `/login`
+function getMatch (password, hash) {
 	return bcrypt.compare(password, hash)
 }
-// . jsonwebtoken(sign)
-function getToken (user) { // used in `/login` & `/register`
+// used in `/login` & `/register`
+function createToken (user) {
 	const payload = {
 		id: user.id,
 		username: user.username
@@ -101,9 +104,11 @@ function getToken (user) { // used in `/login` & `/register`
 	const opts = { expiresIn: '1d' }
 	return jwt.sign(payload, process.env.AUTH_SECRET, opts)
 }
-
-
-
+// user in `/logout`
+function verifyToken (token) {
+	const opts  = { maxAge: '1d' }
+	return jwt.verify(token, process.env.AUTH_SECRET, opts)
+}
 
 module.exports = router
 

@@ -26,8 +26,9 @@
 				body: JSON.stringify({
 					username: user,
 					password: pass,
-					id: window.USER ? window.USER.id : null
-					}),
+					id: window.USER ? window.USER.id : null,
+					token: window.USER.token ? window.USER.token : null
+				}),
 				headers: {
 					Accept: 'application/json',
 					'Content-Type': 'application/json',

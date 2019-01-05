@@ -7,31 +7,5 @@
       "token": "string"
     }
   ],
-  "rows": [
-    {
-      "id": 1,
-      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhIiwiaWF0IjoxNTQ2MDc0NTMzLCJleHAiOjE1NDYxNjA5MzN9.RR_NymJn2twNZhbiFromUE7oDAiEDyp6usZPeEgWsaQ",
-      "username": "a"
-    },
-    {
-      "id": 2,
-      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJzIiwiaWF0IjoxNTQ2MDc0NTM3LCJleHAiOjE1NDYxNjA5Mzd9.8z3i51h2wf8wHbBXqorru1ErB8SyLvVBfCrIDv6hLso",
-      "username": "s"
-    },
-    {
-      "id": 6,
-      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwidXNlcm5hbWUiOiJzc3NzcyIsImlhdCI6MTU0NjEyMjg3NywiZXhwIjoxNTQ2MjA5Mjc3fQ.3u8yRC34KkkSLJb24j49t_iG451Ci9PKWcMRsC7liZg",
-      "username": "sssss"
-    },
-    {
-      "id": 7,
-      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywidXNlcm5hbWUiOiJtbSIsImlhdCI6MTU0NjEyOTYzMCwiZXhwIjoxNTQ2MjE2MDMwfQ.2dVA0t5cmlEtD4LxhCT3DSrXnjHpJjNjq0Kc7FmJb-E",
-      "username": "mm"
-    },
-    {
-      "id": 16,
-      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsInVzZXJuYW1lIjoic3NzcyIsImlhdCI6MTU0NjE2Nzg3NCwiZXhwIjoxNTQ2MjU0Mjc0fQ.s2DulxDBqv8u0yPTXK0b3f_pVkVp3tlbvzTgKrhBUf4",
-      "username": "ssss"
-    }
-  ]
+  "rows": []
 }
